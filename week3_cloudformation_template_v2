@@ -1,0 +1,63 @@
+Description: >
+  Update instance to t2.nano, change TCP port to 3333, and add tags. Updated by Susan Wertheim.
+  
+
+
+Outputs:
+  InstancePublicIp:
+    Description: Public IP of our instance.
+    Value: !GetAtt 
+      - instance
+      - PublicIp
+  WebUrl:
+    Description: Application endpoint
+    Value: !Join 
+      - ''
+      - - 'http://'
+        - !GetAtt 
+          - instance
+          - PublicDnsName
+        - ':'
+        - '3333'
+Parameters:
+  KeyPair:
+    ConstraintDescription: must be the name of an existing EC2 KeyPair.
+    Description: Name of an existing EC2 KeyPair to SSH
+    Type: 'AWS::EC2::KeyPair::KeyName'
+Resources:
+  SecurityGroup:
+    Properties:
+      GroupDescription: Allow SSH and TCP/3333 access
+      SecurityGroupIngress:
+        - CidrIp: 0.0.0.0/0
+          FromPort: '22'
+          IpProtocol: tcp
+          ToPort: '22'
+        - CidrIp: 0.0.0.0/0
+          FromPort: '3333'
+          IpProtocol: tcp
+          ToPort: '3333'
+    Type: 'AWS::EC2::SecurityGroup'
+  instance:
+    Properties:
+      ImageId: ami-cfe4b2b0
+      InstanceType: t2.nano
+      KeyName: !Ref KeyPair
+      SecurityGroups:
+        - !Ref SecurityGroup
+      Tags: 
+        - Key: Name 
+          Value: Week3HW_CloudFormation
+        - Key: InstanceType
+          Value: T2.nano
+          
+      UserData: !Base64 
+        'Fn::Join':
+          - |+
+
+          - - '#!/bin/bash'
+            - sudo yum install --enablerepo=epel -y nodejs
+            - 'wget https://raw.githubusercontent.com/swertheim1/modify_and_build_web_app/main/helloworld.js -O /home/ec2-user/helloworld.js'
+			- 'wget https://raw.githubusercontent.com/swertheim1/modify_and_build_web_app/main/helloworld.conf -O /home/ec2-user/helloworld.conf'
+            - start helloworld
+    Type: 'AWS::EC2::Instance'
