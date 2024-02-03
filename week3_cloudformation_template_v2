@@ -57,7 +57,7 @@ Resources:
 
           - - '#!/bin/bash'
             - sudo yum install --enablerepo=epel -y nodejs
-            - 'wget https://raw.githubusercontent.com/swertheim1/modify_and_build_web_app/main/helloworld.js -O /home/ec2-user/helloworld.js'
-			- 'wget https://raw.githubusercontent.com/swertheim1/modify_and_build_web_app/main/helloworld.conf -O /home/ec2-user/helloworld.conf'
+            - 'wget https://raw.githubusercontent.com/swertheim1/660_DevOps_Week3/main/helloworld.js -O /home/ec2-user/helloworld.js'
+			      - 'wget https://raw.githubusercontent.com/swertheim1/660_DevOps_Week3/main/helloworld.js -O /home/ec2-user/helloworld.conf'
             - start helloworld
     Type: 'AWS::EC2::Instance'
