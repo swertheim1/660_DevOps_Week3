@@ -1,0 +1,26 @@
+---
+# task file for helloworld
+
+- name: Copying the upstart file
+  become: yes
+  get_url:  
+    url: https://raw.githubusercontent.com/swertheim1/660_DevOps_Week3/main/helloworld.conf
+    dest: /etc/init/helloworld.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Starting the helloworld node service
+  service:
+    name: helloworld
+    state: started
+  # notify: restart helloworld
+
+- name: Copying the application file
+  get_url:
+    url: https://raw.githubusercontent.com/swertheim1/660_DevOps_Week3/main/helloworld.js
+    dest: /home/ec2-user/
+    owner: ec2-user
+    group: ec2-user
+    mode: 0644
+  notify: restart helloworld
